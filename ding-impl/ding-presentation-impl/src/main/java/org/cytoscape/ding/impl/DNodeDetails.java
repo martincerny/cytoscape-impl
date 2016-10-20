@@ -193,12 +193,7 @@ public class DNodeDetails extends NodeDetails {
 	
 	@Override
 	public Color getColorLowDetail(final CyNode node) {
-		boolean isSelected;
-		synchronized (lock) {
-			isSelected = selected.contains(node);
-		}
-
-		if (isSelected)
+		if (isNodeSelected(node))
 			return getSelectedColorLowDetail(node);
 		else
 			return getUnselectedColorLowDetail(node);
@@ -366,13 +361,8 @@ public class DNodeDetails extends NodeDetails {
 	 * This returns actual Color object to the low-level renderer.
 	 */
 	@Override
-	public Paint getFillPaint(final CyNode node) {
-		boolean isSelected;
-		synchronized (lock) {
-			isSelected = selected.contains(node);
-		}
-		
-		if (isSelected)
+	public Paint getFillPaint(final CyNode node) {		
+		if (isNodeSelected(node))
 			return getSelectedPaint(node);
 		else
 			return getUnselectedPaint(node);
@@ -388,6 +378,21 @@ public class DNodeDetails extends NodeDetails {
 		synchronized (lock) {
 			selected.remove(node);
 		}
+	}
+	
+	/**
+	 * Thread-safe access to the selected collection. Always use this method to check
+	 * whether a node is selected
+	 * @param node
+	 * @return
+	 */
+	boolean isNodeSelected(final CyNode node)
+	{
+		boolean isSelected;
+		synchronized (lock) {
+			isSelected = selected.contains(node);
+		}
+		return isSelected;
 	}
 
 	@Override
